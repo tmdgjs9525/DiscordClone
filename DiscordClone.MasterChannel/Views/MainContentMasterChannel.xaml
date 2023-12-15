@@ -1,0 +1,51 @@
+﻿<UserControl
+    x:Class="DiscordClone.MasterChannel.Views.MainContentMasterChannel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:friend="clr-namespace:DiscordClone.MasterChannel.UserControlsFriend.Friend"
+    xmlns:local="clr-namespace:DiscordClone.MasterChannel.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:uc="clr-namespace:DiscordClone.MasterChannel.UserControls" xmlns:friend1="clr-namespace:DiscordClone.MasterChannel.UserControlsFriend.Friend"
+    d:DesignHeight="695"
+    d:DesignWidth="1205"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    x:Name="root"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DiscordClone.Core;component/Color/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="237" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <uc:FindChat Grid.Row="0" Grid.Column="0" />
+
+        <StackPanel Grid.Row="1" Background="{StaticResource DarkBackgroundBrush}">
+            <uc:MainContentState />
+            <uc:DirectMessageList />
+            <ItemsControl x:Name="friendListBox" ItemsSource="{Binding DirectMessageFriends}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <friend:FriendState Foreground="Gray" GroupName="DMGroup" Command="{Binding ElementName=root, Path=DataContext.NaviDMPageCommand}" CommandParameter="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <ContentControl
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            prism:RegionManager.RegionName="MasterChannelContentRegion" />
+    </Grid>
+</UserControl>

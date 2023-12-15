@@ -1,0 +1,86 @@
+﻿<RadioButton
+    x:Class="DiscordClone.MasterChannel.UserControlsFriend.Friend.FriendState"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DiscordClone.MasterChannel.UserControlsFriend.Friend"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="70"
+    d:DesignWidth="200"
+    Background="{DynamicResource DarkBackgroundBrush}"
+    Margin="0,3,0,0"
+    mc:Ignorable="d">
+    <RadioButton.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DiscordClone.Core;component/Color/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </RadioButton.Resources>
+    <RadioButton.Template>
+        <ControlTemplate TargetType="RadioButton">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    x:Name="backgroundBorder"
+                    Grid.ColumnSpan="2"
+                    Margin="5,0,5,0"
+                    Background="{StaticResource DarkBackgroundBrush}"
+                    CornerRadius="5" />
+                <Border
+                    Width="30"
+                    Height="30"
+                    Margin="15,0,0,0"
+                    HorizontalAlignment="Left"
+                    Background="BlanchedAlmond"
+                    CornerRadius="50" />
+                <Border
+                    Width="15"
+                    Height="15"
+                    Margin="30,23,0,0"
+                    Background="{StaticResource DarkBackgroundBrush}"
+                    CornerRadius="50" />
+                <Border
+                    x:Name="stateBorder"
+                    Width="10"
+                    Height="10"
+                    Margin="30,23,0,0"
+                    Background="Gray"
+                    CornerRadius="50" />
+                <Label
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Name}"
+                    FontSize="25"
+                    FontWeight="DemiBold"
+                    Foreground="{TemplateBinding Foreground}" />
+            </Grid>
+            <ControlTemplate.Triggers>
+                <DataTrigger Binding="{Binding State}" Value="ONLINE">
+                    <Setter TargetName="stateBorder" Property="Background" Value="#23a55a" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="OFFLINE">
+                    <Setter TargetName="stateBorder" Property="Background" Value="Gray" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="SLEEP">
+                    <Setter TargetName="stateBorder" Property="Background" Value="Red" />
+                </DataTrigger>
+                
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter TargetName="backgroundBorder" Property="Background" Value="Transparent" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="backgroundBorder" Property="Background" Value="#36373d" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="backgroundBorder" Property="Background" Value="{StaticResource SelectedColorBrush}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </RadioButton.Template>
+</RadioButton>

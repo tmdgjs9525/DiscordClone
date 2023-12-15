@@ -1,0 +1,17 @@
+﻿<UserControl
+    x:Class="DiscordClone.MasterChannel.Nitro.Views.MainContentNitro"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DiscordClone.MasterChannel.Nitro.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewmodel="clr-namespace:DiscordClone.MasterChannel.Nitro.ViewModels"
+    d:DesignHeight="647"
+    d:DesignWidth="968"
+    mc:Ignorable="d">
+    <UserControl.DataContext>
+        <viewmodel:MainContentNitroViewModel/>
+    </UserControl.DataContext>
+    <Grid Background="Green"/>
+</UserControl>

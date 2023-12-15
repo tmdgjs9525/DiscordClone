@@ -1,0 +1,24 @@
+﻿<UserControl
+    x:Class="DiscordClone.SideBars.Views.SideChannel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DiscordClone.SideBars.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    d:DesignHeight="450"
+    d:DesignWidth="100"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d">
+    <StackPanel Orientation="Vertical">
+        <local:SideChannelRadioButton Command="{Binding navigationMasterChannelClickCommand}" />
+        <Border BorderBrush="Gray" BorderThickness="1" Opacity="0.2" Width="30" Margin="0,0,0,2"/>
+        <ItemsControl Margin="0,5,0,0" ItemsSource="{Binding Channels}" >
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:SideChannelRadioButton Command="{Binding DataContext.navigationChannelClickCommand ,RelativeSource={RelativeSource AncestorType={x:Type StackPanel}}}"   CommandParameter="{Binding channelName}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

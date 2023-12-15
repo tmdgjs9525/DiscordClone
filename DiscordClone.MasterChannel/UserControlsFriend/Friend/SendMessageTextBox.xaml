@@ -1,0 +1,66 @@
+﻿<TextBox
+    x:Class="DiscordClone.MasterChannel.UserControlsFriend.Friend.SendMessageTextBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:DiscordClone.Core.Convert;assembly=DiscordClone.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DiscordClone.MasterChannel.UserControlsFriend.Friend"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    MinWidth="300"
+    MinHeight="40"
+    VerticalContentAlignment="Center"
+    Background="{DynamicResource BackgroundBrush}"
+    BorderBrush="{DynamicResource BackgroundBrush}"
+    BorderThickness="1"
+    Foreground="LightGray"
+    Tag="{Binding CurrentDMFriend.Name}"
+    Text="{Binding CurrentText, UpdateSourceTrigger=PropertyChanged}"
+    mc:Ignorable="d">
+    <TextBox.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DiscordClone.Core;component/Color/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </TextBox.Resources>
+    <TextBox.InputBindings>
+        <KeyBinding Key="Enter" Command="{Binding SendMessageCommand}" />
+    </TextBox.InputBindings>
+    <TextBox.Style>
+        <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Grid>
+                            <Border
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                                <!--  조절 가능한 값으로 변경  -->
+                                <ScrollViewer x:Name="PART_ContentHost" />
+                            </Border>
+                            <TextBlock
+                                x:Name="Watermark"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Foreground="Silver"
+                                Text="{TemplateBinding Tag}"
+                                Visibility="Collapsed" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsFocused" Value="False" />
+                                    <Condition Property="Text" Value="" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Watermark" Property="Visibility" Value="Visible" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </TextBox.Style>
+</TextBox>

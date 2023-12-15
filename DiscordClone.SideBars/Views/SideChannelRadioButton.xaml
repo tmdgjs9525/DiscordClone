@@ -1,0 +1,187 @@
+﻿<RadioButton
+    x:Class="DiscordClone.SideBars.Views.SideChannelRadioButton"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DiscordClone.SideBars.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    Width="50"
+    Height="50"
+    Margin="0,0,0,10"
+    GroupName="channel"
+    mc:Ignorable="d">
+    <RadioButton.Template>
+        <ControlTemplate TargetType="RadioButton">
+            <Grid>
+                <Rectangle
+                    x:Name="rectangle"
+                    Fill="{TemplateBinding Background}"
+                    RadiusX="35"
+                    RadiusY="35"
+                    SnapsToDevicePixels="True" />
+                <Viewbox>
+                    <Canvas Width="23" Height="23">
+                        <Path Data="{Binding DataContext.channelIcon, RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}}" Fill="{Binding DataContext.color, RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}}" />
+                    </Canvas>
+                </Viewbox>
+                <Border
+                    x:Name="leftBorder"
+                    Width="10"
+                    Height="10"
+                    Margin="-20,0,0,0"
+                    HorizontalAlignment="Left"
+                    Background="#F2F3F5"
+                    ClipToBounds="True"
+                    CornerRadius="5">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DataContext.allContentsViewed, RelativeSource={RelativeSource AncestorType={x:Type Border}}}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DataContext.allContentsViewed, RelativeSource={RelativeSource AncestorType={x:Type Border}}}" Value="True">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="Height"
+                                                    To="40"
+                                                    Duration="0:0:0.1" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <!--  Checked가 False일 때의 애니메이션 정의  -->
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="Height"
+                                                    To="10"
+                                                    Duration="0:0:0.1" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="Height"
+                                                    To="40"
+                                                    Duration="0:0:0.1" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <!--  Checked가 False일 때의 애니메이션 정의  -->
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="Height"
+                                                    To="10"
+                                                    Duration="0:0:0.1" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+
+                        <VisualState x:Name="Normal">
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="RadiusX"
+                                    To="35"
+                                    Duration="0:0:0.1" />
+                                <DoubleAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="RadiusY"
+                                    To="35"
+                                    Duration="0:0:0.1" />
+                                <ColorAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                    To="#2b2d31"
+                                    Duration="0:0:0.1" />
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="Checked">
+                            <Storyboard>
+                                <!--  Checked 상태에 대한 애니메이션 정의  -->
+                                <DoubleAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="RadiusX"
+                                    To="15"
+                                    Duration="0:0:0.0" />
+                                <DoubleAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="RadiusY"
+                                    To="15"
+                                    Duration="0:0:0.0" />
+                                <ColorAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                    To="#5865f2"
+                                    Duration="0:0:0.2" />
+                            </Storyboard>
+                        </VisualState>
+                        <VisualState x:Name="MouseOver">
+                            <Storyboard>
+                                <ColorAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                    To="#5865f2"
+                                    Duration="0:0:0.1" />
+
+                                <DoubleAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="RadiusX"
+                                    To="15"
+                                    Duration="0:0:0.1" />
+                                <DoubleAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="RadiusY"
+                                    To="15"
+                                    Duration="0:0:0.1" />
+                                <!--  다른 애니메이션 추가  -->
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="CheckStates">
+
+                        <VisualState x:Name="Unchecked">
+                            <Storyboard>
+                                <!--  Checked 상태에 대한 애니메이션 정의  -->
+                                <DoubleAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="RadiusX"
+                                    To="35"
+                                    Duration="0:0:0.0" />
+                                <DoubleAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="RadiusY"
+                                    To="35"
+                                    Duration="0:0:0.0" />
+                                <ColorAnimation
+                                    Storyboard.TargetName="rectangle"
+                                    Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)"
+                                    To="#2b2d31"
+                                    Duration="0:0:0.1" />
+                            </Storyboard>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+            </Grid>
+        </ControlTemplate>
+    </RadioButton.Template>
+</RadioButton>
