@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DiscordClone.Core;component/Color/Colors.xaml"/>
+                <ResourceDictionary Source="/DiscordClone.Core;component/Color/Colors.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -21,5 +21,40 @@
             Content="DiscordClone"
             FontWeight="UltraBold"
             Foreground="#949BA4" />
+        <StackPanel
+            Margin="0,0,10,0"
+            Grid.Row="0"
+            Grid.Column="2"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                Width="20"
+                Height="20"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                Content="_"
+                FontWeight="Bold"
+                Foreground="Gray" />
+            <Button
+                Width="20"
+                Height="20"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                Content="□"
+                FontWeight="Bold"
+                Foreground="Gray" />
+            <Button
+                Width="20"
+                Height="20"
+                Background="Transparent"
+                BorderBrush="Transparent"
+                BorderThickness="0"
+                Content="X"
+                Command="{Binding ExitCommand}"
+                FontWeight="Bold"
+                Foreground="Gray" />
+        </StackPanel>
     </Grid>
 </UserControl>

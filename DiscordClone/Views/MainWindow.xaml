@@ -27,11 +27,10 @@
             <RowDefinition Height="25" />
             <RowDefinition Height="48" />
             <RowDefinition Height="3" />
-
             <RowDefinition />
         </Grid.RowDefinitions>
-
-        <mainViews:TopBar Grid.ColumnSpan="3" />
+        
+        <mainViews:TopBar Grid.ColumnSpan="3" MouseDown="TopBar_MouseDown"/>
         <sidebar:SideChannel
             Grid.Row="1"
             Grid.RowSpan="3"

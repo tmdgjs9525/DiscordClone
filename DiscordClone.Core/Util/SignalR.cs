@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,28 +49,34 @@ namespace DiscordClone.MasterChannel.Util
                     Debug.WriteLine("Connected to SignalR");
                     User user = User.Instance();
                     // Send the message to the server
-                    _hubProxy.Invoke("MatchGuidWithUserName", user.userName,user.guid);
-                    
+                    _hubProxy.Invoke("MatchGuidWithUserName",user.guid);
+                    _hubProxy.Invoke("Send", "test");
+
                 }
             });
-            _hubProxy.On<byte[]>("ReceiveAudio", async buffer =>
+            _hubProxy.On<byte[]>("ReceiveAudio", buffer =>
             {
                 Debug.WriteLine(buffer.Length);
                 playAudioAsync(buffer);
             });
-            _hubProxy.On<string>("ReceiveMessage",  message =>
+            _hubProxy.On<string>("test", message =>
             {
                 Debug.WriteLine(message);
             });
 
-            
-        }
+            _hubProxy.On<string>("ReceiveMessage",  message =>
+            {
+                Debug.WriteLine(message);
+            });
+           
 
+        }
+       
         public void SendMessageToFriend(Guid friendGuid,string messsage)
         {
             _hubProxy.Invoke("SendMessage", friendGuid, messsage);
         }
-        private void StartAudioCapture()
+        public void StartAudioCapture(Guid receiverGuid)
         {
             waveIn = new WaveInEvent();
             waveIn.WaveFormat = new WaveFormat(16000,1);
@@ -78,7 +85,7 @@ namespace DiscordClone.MasterChannel.Util
                 // Send audio data to the server
                 byte[] audioBuffer = new byte[e.BytesRecorded];
                 Buffer.BlockCopy(e.Buffer, 0, audioBuffer, 0, e.BytesRecorded);
-                await Task.Run(() => _hubProxy.Invoke("SendAudio", audioBuffer));
+                await Task.Run(() => _hubProxy.Invoke("SendAudio", audioBuffer,receiverGuid));
             };
 
             waveIn.StartRecording();

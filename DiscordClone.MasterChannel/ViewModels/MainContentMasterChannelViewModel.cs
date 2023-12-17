@@ -71,7 +71,7 @@ namespace DiscordClone.MasterChannel.ViewModels
         [RelayCommand]
         private void callFriend()
         {
-            
+            SignalR.Instance().StartAudioCapture(CurrentDMFriend.Guid);
         }
 
         [RelayCommand]

@@ -1,4 +1,5 @@
-﻿using DiscordClone.Core.Events;
+﻿using CommunityToolkit.Mvvm.Input;
+using DiscordClone.Core.Events;
 using DiscordClone.Core.Util;
 using DiscordClone.MasterChannel.Util;
 using DiscordClone.MasterChannel.Views;
@@ -7,11 +8,12 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.Windows;
 using System.Windows.Input;
 
 namespace DiscordClone.ViewModels
 {
-    public class MainWindowViewModel : BindableBase
+    public partial class MainWindowViewModel : BindableBase
     {
         private readonly IRegionManager _regionManager;
         private readonly IEventAggregator _ea;
@@ -40,6 +42,12 @@ namespace DiscordClone.ViewModels
             _regionManager.RegisterViewWithRegion("MainContentRegion",typeof(MainContentMasterChannel));
         }
 
+
+        [RelayCommand]
+        private void Exit()
+        {
+            Application.Current.Shutdown();
+        }
         private void NavigationEvent(string eventData)
         {
             OnNavigation(eventData);
