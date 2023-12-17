@@ -32,7 +32,7 @@ namespace DiscordClone.ViewModels
             }
             login.ShowDialog();
 
-            signalR.StartSignalR();
+          
 
             //databaseManager.getTempData();
             _ea = ea;

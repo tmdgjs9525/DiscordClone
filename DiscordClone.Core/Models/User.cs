@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Media;
+
 
 namespace DiscordClone.Core.Models
 {
@@ -8,27 +10,15 @@ namespace DiscordClone.Core.Models
         public string userName { get; private set; }
         public string password { get; private set; }
         public Guid guid { get; private set; }
-
-        private User()
-        {
-           
-        }
-        private static User instance;
-        public static User Instance()
-        {
-            if (instance == null)
-            {
-                instance = new User();
-            }
-            return instance;
-        }
-        public void setUser(string userId, string userName, string password, Guid guid)
+        public Brush color { get; set; }
+        public User(string userId, string userName, string password, Guid guid)
         {
             this.userId = userId;
             this.userName = userName;
             this.password = password;
             this.guid = guid;
         }
+
 
     }
 }

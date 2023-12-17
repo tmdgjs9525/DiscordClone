@@ -2,6 +2,7 @@
     x:Class="DiscordClone.MasterChannel.UserControlsFriend.MasterChannelDirectMessage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:call="clr-namespace:DiscordClone.MasterChannel.UserControlsFriend.Call"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:friend="clr-namespace:DiscordClone.MasterChannel.UserControlsFriend.Friend"
     xmlns:local="clr-namespace:DiscordClone.MasterChannel.UserControlsFriend"
@@ -19,12 +20,15 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="48" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="50" />
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
-        <DockPanel Margin="0,0,30,0" LastChildFill="False">
+        <DockPanel
+            Height="70"
+            Margin="0,0,30,0"
+            LastChildFill="False">
             <Viewbox
                 Width="100"
                 Height="100"
@@ -43,6 +47,7 @@
                 Height="24"
                 HorizontalAlignment="Right"
                 Background="Transparent"
+                BorderBrush="Transparent"
                 BorderThickness="0"
                 Command="{Binding callFriendCommand}"
                 DockPanel.Dock="Right">
@@ -68,7 +73,11 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
-
+        <call:CallingPage
+            Grid.Row="0"
+            Height="300"
+            Margin="20,0,20,0"
+            Visibility="{Binding CallingPageVisible}" />
         <Border
             Height="1"
             VerticalAlignment="Bottom"

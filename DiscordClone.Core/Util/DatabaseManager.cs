@@ -30,9 +30,8 @@ namespace DiscordClone.Core.Util
             return instance;
         }
 
-        public List<Message> GetDirectMessages(Guid friendUserGuid)
+        public List<Message> GetDirectMessages(User user,Guid friendUserGuid)
         {
-            User user = User.Instance();
             Guid chatRoomGuid;
             List<Message> messages = new List<Message>();
 
@@ -85,9 +84,8 @@ namespace DiscordClone.Core.Util
             }
             return messages;
         }
-        public void AddFriendAndCreateChatRoom(Guid friendUserGuid, string chatRoomName)
+        public void AddFriendAndCreateChatRoom(Guid userGuid,Guid friendUserGuid, string chatRoomName)
         {
-            User user = User.Instance();
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
@@ -95,7 +93,7 @@ namespace DiscordClone.Core.Util
                 Guid chatRoomID = Guid.NewGuid();
                 //채팅방 생성
                 string createChatRoomQuery = $"INSERT INTO chatroomdirect (RoomID,User1,User2) VALUES " +
-                    $"(\"{chatRoomID}\",\"{user.guid}\",\"{friendUserGuid}\")";
+                    $"(\"{chatRoomID}\",\"{userGuid}\",\"{friendUserGuid}\")";
                 using (MySqlCommand cmd = new MySqlCommand(createChatRoomQuery, connection))
                 {
                     cmd.ExecuteNonQuery();
@@ -103,14 +101,14 @@ namespace DiscordClone.Core.Util
 
                 //친구추가
                 string addFriendships = $"INSERT INTO friendships (UserID1,UserID2,ChatRoomID) VALUES " +
-                    $"(\"{user.guid}\",\"{friendUserGuid}\",\"{chatRoomID}\")";
+                    $"(\"{userGuid}\",\"{friendUserGuid}\",\"{chatRoomID}\")";
                 using (MySqlCommand cmd = new MySqlCommand(addFriendships, connection))
                 {
                     cmd.ExecuteNonQuery();
                 }
 
                 string addFriendshipsOther = $"INSERT INTO friendships (UserID1,UserID2,ChatRoomID) VALUES " +
-                    $"(\"{friendUserGuid}\",\"{user.guid}\",\"{chatRoomID}\")";
+                    $"(\"{friendUserGuid}\",\"{userGuid}\",\"{chatRoomID}\")";
                 using (MySqlCommand cmd = new MySqlCommand(addFriendshipsOther, connection))
                 {
                     cmd.ExecuteNonQuery();
@@ -118,7 +116,7 @@ namespace DiscordClone.Core.Util
 
             }
         }
-        public Friend SearchFriend(string userId)
+        public Friend SearchFriend(Guid userGuid,string userId)
         {
             Friend? friend = null;
 
@@ -135,7 +133,7 @@ namespace DiscordClone.Core.Util
                             string dbUserId = reader.GetString("UserID");
                             string dbUserName = reader.GetString("UserName");
                             Guid guid = (Guid)reader["Guid"];
-                            if (!guid.Equals(User.Instance().guid))
+                            if (!guid.Equals(userGuid))
                             {
                                 friend = new Friend(dbUserId, dbUserName, guid, FriendState.ONLINE, false);
                             }
@@ -164,16 +162,15 @@ namespace DiscordClone.Core.Util
             }
             return chatroomID;
         }
-        public void AddMessage(Guid friendUserGuid, string message)
+        public void AddMessage(Guid userGuid,Guid friendUserGuid, string message)
         {
-            User user = User.Instance();
-            Guid chatRoomId = findFriendChatRoomID (user.guid, friendUserGuid);
+            Guid chatRoomId = findFriendChatRoomID (userGuid, friendUserGuid);
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 connection.Open();
 
                 string createChatRoomQuery = $"INSERT INTO messages (chatroom,SenderID,MessageContent) VALUES " +
-                    $"(\"{chatRoomId}\",\"{user.guid}\",\"{message}\")";
+                    $"(\"{chatRoomId}\",\"{userGuid}\",\"{message}\")";
                 using (MySqlCommand cmd = new MySqlCommand(createChatRoomQuery, connection))
                 {
                     cmd.ExecuteNonQuery();
@@ -230,7 +227,7 @@ namespace DiscordClone.Core.Util
 
         }
 
-        public List<Friend> loadFriends()
+        public List<Friend> loadFriends(Guid userGuid)
         {
             List<Friend> friends = new List<Friend>();
 
@@ -238,10 +235,9 @@ namespace DiscordClone.Core.Util
             {
                 connection.Open();
 
-                User user = User.Instance();
                 string query = "SELECT U.Guid, U.UserID, U.username FROM Friendships F " +
                     "JOIN Users U ON F.UserID2 = U.Guid " +
-                    $"WHERE F.UserID1 = \"{user.guid}\"";
+                    $"WHERE F.UserID1 = \"{userGuid}\"";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
                 {
@@ -262,7 +258,7 @@ namespace DiscordClone.Core.Util
             }
             return friends;
         }
-        public bool login(string userId, string password)
+        public bool login(ref User user,string userId, string password)
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
@@ -284,8 +280,7 @@ namespace DiscordClone.Core.Util
                             Guid guid = (Guid)reader["Guid"];
                             if (userId.Equals(dbUserName) && password.Equals(dbPassword))
                             {
-                                User user = User.Instance();
-                                user.setUser(dbUserId,dbUserName, password, guid);
+                                user = new User(dbUserId,dbUserName, password, guid);
                                 return true;
                             }
                         }

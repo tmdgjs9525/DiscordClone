@@ -18,9 +18,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 namespace DiscordClone.MasterChannel.ViewModels
 {
     public partial class MainContentMasterChannelViewModel :ObservableObject
@@ -50,7 +52,13 @@ namespace DiscordClone.MasterChannel.ViewModels
         [ObservableProperty]
         private List<Message> messages; //DM 메세지들
 
-        User currentUser = User.Instance();
+        [ObservableProperty]
+        private List<Friend> callingUsers;
+        [ObservableProperty]
+        private Visibility callingPageVisible;
+
+        public static User currentUser;
+        SignalR signalr = SignalR.Instance();
         bool calling = false;
         public MainContentMasterChannelViewModel(IEventAggregator ea,IRegionManager regionManager)
         {
@@ -61,7 +69,7 @@ namespace DiscordClone.MasterChannel.ViewModels
             _regionManager.RegisterViewWithRegion("MasterChannelContentRegion", typeof(MainContentNitro));
             _regionManager.RegisterViewWithRegion("MasterChannelContentRegion", typeof(MainContentStore));
             _regionManager.RegisterViewWithRegion("MasterChannelContentRegion", typeof(MasterChannelDirectMessage));
-            
+            CallingPageVisible = Visibility.Collapsed;
             DirectMessageFriends = genFriends();
             _friends = genFriends();
             getFriendsInStatus("ONLINE");
@@ -71,6 +79,12 @@ namespace DiscordClone.MasterChannel.ViewModels
         [RelayCommand]
         private void callFriend()
         {
+            CurrentDMFriend.Color = Brushes.Blue;
+            currentUser.color = Brushes.Green;
+            List<Friend> temp = new List<Friend>();
+            temp.Add(Friend.ConvertUserToFriend(currentUser));
+            CallingUsers = temp;
+            CallingPageVisible = Visibility.Visible;
             SignalR.Instance().StartAudioCapture(CurrentDMFriend.Guid);
         }
 
@@ -79,22 +93,22 @@ namespace DiscordClone.MasterChannel.ViewModels
         {
             //SignalR signal = SignalR.Instance();
             //signal.SendMessageToFriend(CurrentDMFriend.Guid,CurrentText);
-            User user = User.Instance();
+
             List<Message> temp = new List<Message>();
             temp = Messages.ToList();
-            databaseManager.AddMessage(CurrentDMFriend.Guid, CurrentText);
+            databaseManager.AddMessage(currentUser.guid,CurrentDMFriend.Guid, CurrentText);
             if (temp.Count == 0)
             {
-                temp.Add(new Message(DateTime.Now, user.userName, user.guid));
+                temp.Add(new Message(DateTime.Now, currentUser.userName, currentUser.guid));
                 temp.Last().messages.Add(CurrentText);
             }
-            else if (temp.Last().sender.Equals(user.guid))
+            else if (temp.Last().sender.Equals(currentUser.guid))
             {
                 temp.Last().messages.Add(CurrentText);
             }
             else
             {
-                temp.Add(new Message(DateTime.Now,user.userName,user.guid));
+                temp.Add(new Message(DateTime.Now, currentUser.userName, currentUser.guid));
                 temp.Last().messages.Add(CurrentText);
             }
             Messages = temp;
@@ -104,7 +118,7 @@ namespace DiscordClone.MasterChannel.ViewModels
         private void AddFriend(object friendParam)
         {
             Friend friend = friendParam as Friend;
-            List<Friend> friends = databaseManager.loadFriends();
+            List<Friend> friends = databaseManager.loadFriends(currentUser.guid);
             foreach (Friend f in friends)
             {
                 if (f.userId.Equals(friend.userId))
@@ -114,23 +128,23 @@ namespace DiscordClone.MasterChannel.ViewModels
                     return;
                 }
             }
-            databaseManager.AddFriendAndCreateChatRoom(friend.Guid,"default");
+            databaseManager.AddFriendAndCreateChatRoom(currentUser.guid, friend.Guid,"default");
             Friends = genFriends();
             CurrentFriendNumber = Friends.Count.ToString() + " 명";
 
         }
         [RelayCommand]
-        private void NaviDMPage(object friendParam)
+        private async Task NaviDMPageAsync(object friendParam)
         {
             CurrentDMFriend = friendParam as Friend;
-            Messages = databaseManager.GetDirectMessages(CurrentDMFriend.Guid);
+            Messages = await signalr.getDirectMessages(currentUser.guid,CurrentDMFriend.Guid);
             _ea.GetEvent<NavigationViewType>().Publish(ViewType.MasterChannelDirectMessage);
         }
         [RelayCommand]
         private void SearchFriend(string UserId)
         {
             List<Friend> temp = new List<Friend>();
-            Friend friend = databaseManager.SearchFriend(UserId);
+            Friend friend = databaseManager.SearchFriend(currentUser.guid,UserId);
             if (friend !=null)
             {
                 temp.Add(friend);
@@ -140,7 +154,7 @@ namespace DiscordClone.MasterChannel.ViewModels
         }
         private List<Friend> genFriends()
         {
-            List<Friend> test = databaseManager.loadFriends();
+            List<Friend> test = databaseManager.loadFriends(currentUser.guid);
             return test;  
         }
 

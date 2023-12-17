@@ -18,7 +18,6 @@ namespace DiscordClone.MasterChannel.Util
     {
         public IHubProxy _hubProxy { get; private set; }
         private IWaveIn waveIn;
-
         private SignalR()
         {
         }
@@ -32,7 +31,7 @@ namespace DiscordClone.MasterChannel.Util
             return instance;
         }
 
-
+       
         public void StartSignalR()
         {
             var connection = new HubConnection(@"http://125.184.186.132:8080");
@@ -43,14 +42,11 @@ namespace DiscordClone.MasterChannel.Util
                 if (task.IsFaulted)
                 {
                     Debug.WriteLine($"Error connecting to SignalR: {task.Exception}");
+                    Debug.WriteLine($"aaaaaaaaaaaaaaaaaaa");
                 }
                 else
                 {
                     Debug.WriteLine("Connected to SignalR");
-                    User user = User.Instance();
-                    // Send the message to the server
-                    _hubProxy.Invoke("MatchGuidWithUserName",user.guid);
-                    _hubProxy.Invoke("Send", "test");
 
                 }
             });
@@ -68,10 +64,41 @@ namespace DiscordClone.MasterChannel.Util
             {
                 Debug.WriteLine(message);
             });
-           
 
         }
-       
+        public void MatchGuidWithUserName(Guid userGuid)
+        {
+            _hubProxy.Invoke("MatchGuidWithUserName", userGuid);
+
+        }
+        public async Task<List<Message>> getDirectMessages(Guid userGuid,Guid friendUserGuid)
+        {
+            List<Message> messages = null;
+            try
+            {
+                messages = await _hubProxy.Invoke<List<Message>>("getDirectMessages", userGuid, friendUserGuid);
+                Debug.WriteLine(messages);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception: {ex.Message}");
+            }
+            return messages;
+        }
+
+        public async Task<User> loginAsync(string userId, string password)
+        {
+            User user = null;
+            try
+            {
+                user = await _hubProxy.Invoke<User>("login", userId, password);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception: {ex.Message}");
+            }
+            return user;
+        }
         public void SendMessageToFriend(Guid friendGuid,string messsage)
         {
             _hubProxy.Invoke("SendMessage", friendGuid, messsage);
@@ -120,5 +147,7 @@ namespace DiscordClone.MasterChannel.Util
 
             }
         }
+
+       
     }
 }

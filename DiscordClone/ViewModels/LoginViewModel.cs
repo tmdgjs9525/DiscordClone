@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DiscordClone.Core.Models;
 using DiscordClone.Core.Util;
+using DiscordClone.MasterChannel.Util;
+using DiscordClone.MasterChannel.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +22,12 @@ namespace DiscordClone.ViewModels
         private string nickName;
         [ObservableProperty]
         private string password;
-        
+
+        SignalR signalr = SignalR.Instance();
         DatabaseManager databaseManager = DatabaseManager.Instance();
         public LoginViewModel()
         {
-                
+             signalr.StartSignalR();
         }
 
         [RelayCommand]
@@ -35,14 +39,17 @@ namespace DiscordClone.ViewModels
             }
         }
         [RelayCommand]
-        private void Login()
+        private async void Login()
         {
-            if(!databaseManager.login(UserId, Password))
+            MainContentMasterChannelViewModel.currentUser = await signalr.loginAsync(UserId, Password);
+            
+            if (MainContentMasterChannelViewModel.currentUser == null)
             {
                 MessageBox.Show("아이디 및 비밀번호 확인");
             }
             else
             {
+                signalr.MatchGuidWithUserName(MainContentMasterChannelViewModel.currentUser.guid);
                 thisWindow.Close();
             }
         }
