@@ -53,7 +53,7 @@ namespace DiscordClone.MasterChannel.ViewModels
         private List<Message> messages; //DM 메세지들
 
         [ObservableProperty]
-        private List<Friend> callingUsers;
+        private List<Friend> callingUsers = new List<Friend>();
         [ObservableProperty]
         private Visibility callingPageVisible;
 
@@ -75,17 +75,39 @@ namespace DiscordClone.MasterChannel.ViewModels
             getFriendsInStatus("ONLINE");
             //_regionManager.RegisterViewWithRegion("MasterChannelContentRegion", typeof(NitroMain));
             CurrentFriendNumber = "온라인 - 0명";
+            signalr.setRecieveMessageDelegate(ReceiveMessage);
+            signalr.setRecevieJoinChatRoom(ReceiveJoinChatRoom);
         }
         [RelayCommand]
         private void callFriend()
         {
+            signalr.ChatRoomOnLive(currentUser.guid,CurrentDMFriend.Guid);
             CurrentDMFriend.Color = Brushes.Blue;
             currentUser.color = Brushes.Green;
-            List<Friend> temp = new List<Friend>();
-            temp.Add(Friend.ConvertUserToFriend(currentUser));
-            CallingUsers = temp;
+            CallingUsers.Add(Friend.ConvertUserToFriend(currentUser));
             CallingPageVisible = Visibility.Visible;
-            SignalR.Instance().StartAudioCapture(CurrentDMFriend.Guid);
+            //signalr.StartAudioCapture(CurrentDMFriend.Guid);
+        }
+        private void ReceiveJoinChatRoom(Friend friend)
+        {
+            List<Friend> temp = CallingUsers.ToList();
+            temp.Add(friend);
+            CallingUsers = temp;
+        }
+        private void ReceiveMessage(Message message)
+        {
+            List<Message> temp = new List<Message>();
+            temp = Messages.ToList();
+            if (temp.Last().sender.Equals(message.sender))
+            {
+                temp.Last().messages.Add(message.messages.Last());
+            }
+            else
+            {
+                temp.Add(new Message(DateTime.Now, message.senderName, message.sender));
+                temp.Last().messages.Add(message.messages.Last());
+            }
+            Messages = temp;
         }
 
         [RelayCommand]
@@ -111,6 +133,9 @@ namespace DiscordClone.MasterChannel.ViewModels
                 temp.Add(new Message(DateTime.Now, currentUser.userName, currentUser.guid));
                 temp.Last().messages.Add(CurrentText);
             }
+            Message sendMessage = new Message(temp.Last().Time,temp.Last().senderName,temp.Last().sender);
+            sendMessage.messages.Add(CurrentText);
+            signalr.sendMessage(CurrentDMFriend.Guid, sendMessage);
             Messages = temp;
             CurrentText = "";
         }
@@ -137,6 +162,16 @@ namespace DiscordClone.MasterChannel.ViewModels
         private async Task NaviDMPageAsync(object friendParam)
         {
             CurrentDMFriend = friendParam as Friend;
+            bool isLive = await signalr.readChatRoomOnLive(currentUser.guid, CurrentDMFriend.Guid);
+            if (isLive)
+            {
+                CallingPageVisible = Visibility.Visible;
+                CallingUsers.Add(CurrentDMFriend);
+            }
+            else
+            {
+                CallingPageVisible = Visibility.Collapsed;
+            }
             Messages = await signalr.getDirectMessages(currentUser.guid,CurrentDMFriend.Guid);
             _ea.GetEvent<NavigationViewType>().Publish(ViewType.MasterChannelDirectMessage);
         }
@@ -157,7 +192,11 @@ namespace DiscordClone.MasterChannel.ViewModels
             List<Friend> test = databaseManager.loadFriends(currentUser.guid);
             return test;  
         }
-
+        [RelayCommand]
+        private void JoinChatRoom()
+        {
+            signalr.joinDirectChatRoom(Friend.ConvertUserToFriend(currentUser),CurrentDMFriend.Guid);
+        }
         [RelayCommand]
         private void getFriendsInStatus(string state)
         {

@@ -24,6 +24,7 @@ namespace DiscordClone.MasterChannel.Models
             this.Guid = Id;
             this.State = State;
             this.isFriend = isFriend;
+            this.Color = Brushes.Purple;
         }
 
         public static Friend ConvertUserToFriend(User user)

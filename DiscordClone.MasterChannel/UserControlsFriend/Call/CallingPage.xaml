@@ -41,7 +41,7 @@
         </DockPanel>
 
 
-        <ItemsControl Grid.Row="2" ItemsSource="{Binding CallingUsers}">
+        <ItemsControl Grid.Row="2" ItemsSource="{Binding CallingUsers, Mode=TwoWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel
@@ -73,7 +73,8 @@
             Grid.Row="3"
             Width="150"
             Height="40"
-            Margin="0,-30,0,0">
+            Margin="0,-30,0,0"
+            Command="{Binding JoinChatRoomCommand}">
             <Button.Template>
                 <ControlTemplate>
                     <Border Background="#43b582" CornerRadius="5">

@@ -1,5 +1,6 @@
 ﻿using DiscordClone.Core.Models;
 using DiscordClone.Core.Util;
+using DiscordClone.MasterChannel.Models;
 using Microsoft.AspNet.SignalR.Client;
 using MySqlConnector;
 using NAudio.Wave;
@@ -18,6 +19,11 @@ namespace DiscordClone.MasterChannel.Util
     {
         public IHubProxy _hubProxy { get; private set; }
         private IWaveIn waveIn;
+        public delegate void receiveMesssageDelegate(Message message);
+        receiveMesssageDelegate receiveMesssage;
+
+        public delegate void receiveJoinChatRoomDelegate(Friend friend);
+        receiveJoinChatRoomDelegate receiveJoinChatRoom;
         private SignalR()
         {
         }
@@ -27,11 +33,18 @@ namespace DiscordClone.MasterChannel.Util
             if (instance == null)
             {
                 instance = new SignalR();
+                
             }
             return instance;
         }
-
-       
+        public void setRecieveMessageDelegate(receiveMesssageDelegate method)
+        {
+            receiveMesssage = method;
+        }
+        public void setRecevieJoinChatRoom(receiveJoinChatRoomDelegate method)
+        {
+            receiveJoinChatRoom = method;
+        }
         public void StartSignalR()
         {
             var connection = new HubConnection(@"http://125.184.186.132:8080");
@@ -60,16 +73,37 @@ namespace DiscordClone.MasterChannel.Util
                 Debug.WriteLine(message);
             });
 
-            _hubProxy.On<string>("ReceiveMessage",  message =>
+            _hubProxy.On<Message>("ReceiveMessage",  message =>
             {
+                receiveMesssage(message);
                 Debug.WriteLine(message);
             });
+            _hubProxy.On<Friend>("joinDirectChatRoom", friend =>
+            {
+                receiveJoinChatRoom(friend);
+            });
 
+        }
+        public void joinDirectChatRoom(Friend currentUser,Guid friendGuid)
+        {
+            _hubProxy.Invoke("joinDirectChatRoom", currentUser , friendGuid);
+        }
+        public void ChatRoomOnLive(Guid userGuid,Guid friendGuid)
+        {
+            _hubProxy.Invoke("chatRoomOnLive", userGuid, friendGuid);
+        }
+        public async Task<bool> readChatRoomOnLive(Guid userGuid, Guid friendGuid)
+        {
+            return await _hubProxy.Invoke<bool>("isChatRoomOnLive", userGuid, friendGuid);
         }
         public void MatchGuidWithUserName(Guid userGuid)
         {
             _hubProxy.Invoke("MatchGuidWithUserName", userGuid);
 
+        }
+        public void sendMessage(Guid friendUserGuid, Message message)
+        {
+            _hubProxy.Invoke<List<Message>>("sendMessage", friendUserGuid, message);
         }
         public async Task<List<Message>> getDirectMessages(Guid userGuid,Guid friendUserGuid)
         {
