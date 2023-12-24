@@ -39,7 +39,7 @@ namespace DiscordClone.MasterChannel.Util
         }
         public void setRecieveMessageDelegate(receiveMesssageDelegate method)
         {
-            receiveMesssage = method;
+            receiveMesssage += method;
         }
         public void setRecevieJoinChatRoom(receiveJoinChatRoomDelegate method)
         {

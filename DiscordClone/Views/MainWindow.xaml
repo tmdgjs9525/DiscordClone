@@ -2,20 +2,25 @@
     x:Class="DiscordClone.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animBorder="clr-namespace:AnimateBorder.UI.Units;assembly=AnimateBorder"
     xmlns:mainViews="clr-namespace:DiscordClone.Views"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:sidebar="clr-namespace:DiscordClone.SideBars.Views;assembly=DiscordClone.SideBars"
     Width="1280"
     Height="720"
-    prism:ViewModelLocator.AutoWireViewModel="True"
     Background="{DynamicResource heavyDarkBackgroundBrush}"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    AllowsTransparency="True"
+    WindowStartupLocation="CenterScreen"
     WindowStyle="None">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DiscordClone.Core;component/Color/Colors.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
         </ResourceDictionary>
+
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -29,8 +34,8 @@
             <RowDefinition Height="3" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        
-        <mainViews:TopBar Grid.ColumnSpan="3" MouseDown="TopBar_MouseDown"/>
+
+        <mainViews:TopBar Grid.ColumnSpan="3" MouseDown="TopBar_MouseDown" />
         <sidebar:SideChannel
             Grid.Row="1"
             Grid.RowSpan="3"
@@ -47,5 +52,7 @@
             prism:RegionManager.RegionName="MainContentRegion" />
 
     </Grid>
+
+
 </Window>
 

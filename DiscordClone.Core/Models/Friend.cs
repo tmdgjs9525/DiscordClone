@@ -17,6 +17,7 @@ namespace DiscordClone.MasterChannel.Models
         public FriendState State { get; set; }
         public bool isFriend { get; set; }
         public Brush Color { get; set; }
+        public int alarm { get; set; }
         public Friend(string id,string Name, Guid Id, FriendState State , bool isFriend)
         {
             this.userId = id;

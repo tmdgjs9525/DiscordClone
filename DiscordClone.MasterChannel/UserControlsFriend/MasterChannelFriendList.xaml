@@ -2,6 +2,7 @@
     x:Class="DiscordClone.MasterChannel.Views.MasterChannelFriendList"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animBorder="clr-namespace:AnimateBorder.UI.Units;assembly=AnimateBorder"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:friend="clr-namespace:DiscordClone.MasterChannel.UserControlsFriend.Friend"
     xmlns:local="clr-namespace:DiscordClone.MasterChannel.Views"
@@ -35,47 +36,56 @@
             <ItemsControl ItemsSource="{Binding Friends}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Margin="50,0,50,0" Orientation="Vertical">
-                            <Border
-                                Height="1"
-                                BorderBrush="Gray"
-                                BorderThickness="1" />
+                        <animBorder:AnimateBorder Margin="50,0,50,0" BorderThickness="{Binding alarm, Mode=TwoWay}">
+                            <animBorder:AnimateBorder.BorderBrushs>
+                                <x:Array Type="{x:Type SolidColorBrush}">
+                                    <SolidColorBrush Color="#7BD3EA" />
+                                    <SolidColorBrush Color="#A1EEBD" />
+                                    <SolidColorBrush Color="#F6F7C4" />
+                                </x:Array>
+                            </animBorder:AnimateBorder.BorderBrushs>
+                            <StackPanel Orientation="Vertical">
+                                <Border
+                                    Height="1"
+                                    BorderBrush="Gray"
+                                    BorderThickness="1" />
 
-                            <friend:FriendState
-                                x:Name="friendstate"
-                                Command="{Binding ElementName=root, Path=DataContext.NaviDMPageCommand}"
-                                CommandParameter="{Binding}"
-                                Foreground="White"
-                                GroupName="FriendsGroup" />
-                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                <Button
-                                    Width="30"
-                                    Height="30"
-                                    Margin="0,-40,0,0"
-                                    HorizontalAlignment="Right"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Command="{Binding ElementName=root, Path=DataContext.AddFriendCommand}"
-                                    CommandParameter="{Binding ElementName=friendstate, Path=CommandParameter}">
-                                    <Canvas Width="24" Height="24">
-                                        <Path Data="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" Fill="DarkGray" />
-                                    </Canvas>
-                                </Button>
-                                <Button
-                                    Width="30"
-                                    Height="30"
-                                    Margin="0,-40,0,0"
-                                    HorizontalAlignment="Right"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Command="{Binding ElementName=root, Path=DataContext.callFriendCommand}">
-                                    <Canvas Width="24" Height="24">
-                                        <Path Data="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z" Fill="DarkGray" />
-                                    </Canvas>
-                                </Button>
+                                <friend:FriendState
+                                    x:Name="friendstate"
+                                    Command="{Binding ElementName=root, Path=DataContext.NaviDMPageCommand}"
+                                    CommandParameter="{Binding}"
+                                    Foreground="White"
+                                    GroupName="FriendsGroup" />
+                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                    <Button
+                                        Width="30"
+                                        Height="30"
+                                        Margin="0,-40,0,0"
+                                        HorizontalAlignment="Right"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding ElementName=root, Path=DataContext.AddFriendCommand}"
+                                        CommandParameter="{Binding ElementName=friendstate, Path=CommandParameter}">
+                                        <Canvas Width="24" Height="24">
+                                            <Path Data="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z" Fill="DarkGray" />
+                                        </Canvas>
+                                    </Button>
+                                    <Button
+                                        Width="30"
+                                        Height="30"
+                                        Margin="0,-40,0,0"
+                                        HorizontalAlignment="Right"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding ElementName=root, Path=DataContext.callFriendCommand}">
+                                        <Canvas Width="24" Height="24">
+                                            <Path Data="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z" Fill="DarkGray" />
+                                        </Canvas>
+                                    </Button>
+                                </StackPanel>
+
                             </StackPanel>
-
-                        </StackPanel>
+                        </animBorder:AnimateBorder>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -73,6 +73,7 @@ namespace DiscordClone.MasterChannel.ViewModels
             DirectMessageFriends = genFriends();
             _friends = genFriends();
             getFriendsInStatus("ONLINE");
+           
             //_regionManager.RegisterViewWithRegion("MasterChannelContentRegion", typeof(NitroMain));
             CurrentFriendNumber = "온라인 - 0명";
             signalr.setRecieveMessageDelegate(ReceiveMessage);
@@ -94,8 +95,10 @@ namespace DiscordClone.MasterChannel.ViewModels
             temp.Add(friend);
             CallingUsers = temp;
         }
-        private void ReceiveMessage(Message message)
+        private async void ReceiveMessage(Message message)
         {
+            Messages = await signalr.getDirectMessages(currentUser.guid, message.sender);
+
             List<Message> temp = new List<Message>();
             temp = Messages.ToList();
             if (temp.Last().sender.Equals(message.sender))
@@ -108,6 +111,17 @@ namespace DiscordClone.MasterChannel.ViewModels
                 temp.Last().messages.Add(message.messages.Last());
             }
             Messages = temp;
+
+            foreach (var f in Friends)
+            {
+                if (f.Guid.Equals(message.sender))
+                {
+                    f.alarm = 1;
+                    //Task.Delay(2000);
+                    //f.alarm = 0;
+                }
+            }
+            
         }
 
         [RelayCommand]
@@ -172,7 +186,6 @@ namespace DiscordClone.MasterChannel.ViewModels
             {
                 CallingPageVisible = Visibility.Collapsed;
             }
-            Messages = await signalr.getDirectMessages(currentUser.guid,CurrentDMFriend.Guid);
             _ea.GetEvent<NavigationViewType>().Publish(ViewType.MasterChannelDirectMessage);
         }
         [RelayCommand]
