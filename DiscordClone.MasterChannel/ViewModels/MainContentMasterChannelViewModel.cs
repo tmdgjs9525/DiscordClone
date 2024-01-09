@@ -22,7 +22,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Media;
+using Message = DiscordClone.Core.Models.Message;
 namespace DiscordClone.MasterChannel.ViewModels
 {
     public partial class MainContentMasterChannelViewModel :ObservableObject
@@ -87,7 +89,7 @@ namespace DiscordClone.MasterChannel.ViewModels
             currentUser.color = Brushes.Green;
             CallingUsers.Add(Friend.ConvertUserToFriend(currentUser));
             CallingPageVisible = Visibility.Visible;
-            //signalr.StartAudioCapture(CurrentDMFriend.Guid);
+            signalr.StartAudioCapture(CurrentDMFriend.Guid);
         }
         private void ReceiveJoinChatRoom(Friend friend)
         {
@@ -163,7 +165,7 @@ namespace DiscordClone.MasterChannel.ViewModels
                 if (f.userId.Equals(friend.userId))
                 {
                     friend.isFriend = true;
-                    MessageBox.Show("이미 친구입니다");
+                    System.Windows.MessageBox.Show("이미 친구입니다");
                     return;
                 }
             }
@@ -175,7 +177,10 @@ namespace DiscordClone.MasterChannel.ViewModels
         [RelayCommand]
         private async Task NaviDMPageAsync(object friendParam)
         {
+
             CurrentDMFriend = friendParam as Friend;
+            Messages = await signalr.getDirectMessages(currentUser.guid, CurrentDMFriend.Guid);
+
             bool isLive = await signalr.readChatRoomOnLive(currentUser.guid, CurrentDMFriend.Guid);
             if (isLive)
             {
@@ -209,6 +214,8 @@ namespace DiscordClone.MasterChannel.ViewModels
         private void JoinChatRoom()
         {
             signalr.joinDirectChatRoom(Friend.ConvertUserToFriend(currentUser),CurrentDMFriend.Guid);
+            callFriend();
+
         }
         [RelayCommand]
         private void getFriendsInStatus(string state)

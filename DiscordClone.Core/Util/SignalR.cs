@@ -12,6 +12,7 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DiscordClone.MasterChannel.Util
 {
@@ -139,17 +140,25 @@ namespace DiscordClone.MasterChannel.Util
         }
         public void StartAudioCapture(Guid receiverGuid)
         {
-            waveIn = new WaveInEvent();
-            waveIn.WaveFormat = new WaveFormat(16000,1);
-            waveIn.DataAvailable += async (sender, e) =>
+            try
             {
-                // Send audio data to the server
-                byte[] audioBuffer = new byte[e.BytesRecorded];
-                Buffer.BlockCopy(e.Buffer, 0, audioBuffer, 0, e.BytesRecorded);
-                await Task.Run(() => _hubProxy.Invoke("SendAudio", audioBuffer,receiverGuid));
-            };
+                waveIn = new WaveInEvent();
+                waveIn.WaveFormat = new WaveFormat(16000, 1);
+                waveIn.DataAvailable += async (sender, e) =>
+                {
+                    // Send audio data to the server
+                    byte[] audioBuffer = new byte[e.BytesRecorded];
+                    Buffer.BlockCopy(e.Buffer, 0, audioBuffer, 0, e.BytesRecorded);
+                    await Task.Run(() => _hubProxy.Invoke("SendAudio", audioBuffer, receiverGuid));
+                };
 
-            waveIn.StartRecording();
+                waveIn.StartRecording();
+            }
+            catch
+            {
+                MessageBox.Show("오디오 입력 장치를 확인하세요.");
+            }
+           
         }
 
         private async Task playAudioAsync(byte[] buffer)
