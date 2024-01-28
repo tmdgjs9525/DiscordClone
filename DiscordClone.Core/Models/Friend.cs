@@ -34,5 +34,25 @@ namespace DiscordClone.MasterChannel.Models
             friend.Color = user.color;
             return friend;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            Friend other = (Friend)obj;
+            return userId == other.userId &&
+                   Name == other.Name &&
+                   Guid == other.Guid &&
+                   State == other.State &&
+                   isFriend == other.isFriend &&
+                   Color.Equals(other.Color) &&  // Brush의 동등성 비교
+                   alarm == other.alarm;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(userId, Name, Guid, State, isFriend, Color, alarm);
+        }
     }
 }

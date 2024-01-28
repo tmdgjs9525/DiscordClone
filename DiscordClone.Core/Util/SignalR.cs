@@ -93,6 +93,10 @@ namespace DiscordClone.MasterChannel.Util
         {
             _hubProxy.Invoke("chatRoomOnLive", userGuid, friendGuid);
         }
+        public void ChatRoomOffLive(Guid userGuid, Guid friendGuid)
+        {
+            _hubProxy.Invoke("chatRoomOffLive", userGuid, friendGuid);
+        }
         public async Task<bool> readChatRoomOnLive(Guid userGuid, Guid friendGuid)
         {
             return await _hubProxy.Invoke<bool>("isChatRoomOnLive", userGuid, friendGuid);
@@ -161,6 +165,10 @@ namespace DiscordClone.MasterChannel.Util
            
         }
 
+        public void StopAudioCapture()
+        {
+            waveIn.StopRecording();
+        }
         private async Task playAudioAsync(byte[] buffer)
         {
             try

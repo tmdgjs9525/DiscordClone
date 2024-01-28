@@ -15,6 +15,7 @@ using Prism.Events;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -78,17 +79,20 @@ namespace DiscordClone.MasterChannel.ViewModels
            
             //_regionManager.RegisterViewWithRegion("MasterChannelContentRegion", typeof(NitroMain));
             CurrentFriendNumber = "온라인 - 0명";
+            currentUser.color = Brushes.Blue;
             signalr.setRecieveMessageDelegate(ReceiveMessage);
             signalr.setRecevieJoinChatRoom(ReceiveJoinChatRoom);
         }
         [RelayCommand]
         private void callFriend()
         {
-            signalr.ChatRoomOnLive(currentUser.guid,CurrentDMFriend.Guid);
-            CurrentDMFriend.Color = Brushes.Blue;
-            currentUser.color = Brushes.Green;
-            CallingUsers.Add(Friend.ConvertUserToFriend(currentUser));
-            CallingPageVisible = Visibility.Visible;
+            List<Friend> temp = CallingUsers.ToList();
+            temp.Add(Friend.ConvertUserToFriend(currentUser));
+            CallingUsers = temp;
+            //BtnText = "연결 끊기";
+            //BtnBackground = Brushes.Red;
+            signalr.joinDirectChatRoom(Friend.ConvertUserToFriend(currentUser), CurrentDMFriend.Guid);
+            //CallingPageVisible = Visibility.Visible;
             signalr.StartAudioCapture(CurrentDMFriend.Guid);
         }
         private void ReceiveJoinChatRoom(Friend friend)
@@ -103,15 +107,15 @@ namespace DiscordClone.MasterChannel.ViewModels
 
             List<Message> temp = new List<Message>();
             temp = Messages.ToList();
-            if (temp.Last().sender.Equals(message.sender))
-            {
-                temp.Last().messages.Add(message.messages.Last());
-            }
-            else
-            {
-                temp.Add(new Message(DateTime.Now, message.senderName, message.sender));
-                temp.Last().messages.Add(message.messages.Last());
-            }
+            //if (temp.Last().sender.Equals(message.sender))
+            //{
+            //    temp.Last().messages.Add(message.messages.Last());
+            //}
+            //else
+            //{
+            //    temp.Add(new Message(DateTime.Now, message.senderName, message.sender));
+            //    temp.Last().messages.Add(message.messages.Last());
+            //}
             Messages = temp;
 
             foreach (var f in Friends)
@@ -186,6 +190,8 @@ namespace DiscordClone.MasterChannel.ViewModels
             {
                 CallingPageVisible = Visibility.Visible;
                 CallingUsers.Add(CurrentDMFriend);
+                BtnText = "통화 연결";
+                BtnBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#43b582"));
             }
             else
             {
@@ -210,13 +216,34 @@ namespace DiscordClone.MasterChannel.ViewModels
             List<Friend> test = databaseManager.loadFriends(currentUser.guid);
             return test;  
         }
-        [RelayCommand]
-        private void JoinChatRoom()
-        {
-            signalr.joinDirectChatRoom(Friend.ConvertUserToFriend(currentUser),CurrentDMFriend.Guid);
-            callFriend();
 
+        [ObservableProperty]
+        Brush btnBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#43b582"));
+        [ObservableProperty]
+        string btnText = "통화 연결";
+        [RelayCommand]
+        private Task JoinChatRoomAsync()
+        {
+            Friend f = Friend.ConvertUserToFriend(currentUser);
+            if (CallingUsers.Contains(f)) //내가 통화 연결되어 있을 시 
+            {
+                signalr.StopAudioCapture();
+                signalr.ChatRoomOffLive(currentUser.guid, CurrentDMFriend.Guid);
+                BtnText = "통화 연결";
+                BtnBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#43b582"));
+                CallingPageVisible = Visibility.Collapsed;
+                List<Friend> temp = CallingUsers.ToList();
+                temp.Remove(Friend.ConvertUserToFriend(currentUser));
+                CallingUsers = temp;
+            }
+            else
+            {
+                callFriend();
+            }
+
+            return Task.CompletedTask;
         }
+
         [RelayCommand]
         private void getFriendsInStatus(string state)
         {
