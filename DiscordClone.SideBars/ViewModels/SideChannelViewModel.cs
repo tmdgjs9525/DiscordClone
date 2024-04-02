@@ -31,7 +31,7 @@ namespace DiscordClone.SideBars.ViewModels
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
                 // 디자인 타임에만 실행되는 코드
-                MasterChannel = new Channel("", Icons.D, (Brush)new BrushConverter().ConvertFrom("#dbdee1"));
+                MasterChannel = new Channel("", Icons.DisCord, (Brush)new BrushConverter().ConvertFrom("#dbdee1"));
                 Channels = new List<Channel> {
                 new Channel("", Icons.D , (Brush)new BrushConverter().ConvertFrom("#dbdee1")) ,
                 new Channel("", Icons.PetFoot , Brushes.Red),new Channel("", Icons.PetFoot , Brushes.Red)};
@@ -51,10 +51,11 @@ namespace DiscordClone.SideBars.ViewModels
         }
         private void init()
         {
-            MasterChannel = new Channel("", Icons.D, (Brush)new BrushConverter().ConvertFrom("#dbdee1"));
+            MasterChannel = new Channel("", Icons.DisCord, (Brush)new BrushConverter().ConvertFrom("#dbdee1"));
             List<Channel> initChannel = new List<Channel> { 
-                new Channel("", Icons.D , (Brush)new BrushConverter().ConvertFrom("#dbdee1")) ,
-                new Channel("", Icons.PetFoot , Brushes.Red),new Channel("", Icons.PetFoot , Brushes.Red)};
+                new Channel("", Icons.PetFoot , (Brush)new BrushConverter().ConvertFrom("#dbdee1")) ,
+                new Channel("", Icons.PetFoot , Brushes.Red),
+                new Channel("", Icons.PetFoot , Brushes.Blue)};
             initChannel[0].setAllContentsViewd(true);
             Channels = initChannel;
         }

@@ -1,14 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using DiscordClone.Core.Models;
 using DiscordClone.Core.Util;
 using DiscordClone.MasterChannel.Util;
 using DiscordClone.MasterChannel.ViewModels;
+using Prism.Regions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace DiscordClone.ViewModels
@@ -25,9 +21,17 @@ namespace DiscordClone.ViewModels
 
         SignalR signalr = SignalR.Instance();
         DatabaseManager databaseManager = DatabaseManager.Instance();
+        private readonly IRegionManager _regionManager;
         public LoginViewModel()
         {
+            signalr.StartSignalR();
+
+        }
+        public LoginViewModel(IRegionManager regionManager)
+        {
              signalr.StartSignalR();
+             _regionManager = regionManager;
+
         }
 
         [RelayCommand]

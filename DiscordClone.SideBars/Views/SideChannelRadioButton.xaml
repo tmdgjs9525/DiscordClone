@@ -20,10 +20,8 @@
                     RadiusX="35"
                     RadiusY="35"
                     SnapsToDevicePixels="True" />
-                <Viewbox>
-                    <Canvas Width="23" Height="23">
-                        <Path Data="{Binding DataContext.channelIcon, RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}}" Fill="{Binding DataContext.color, RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}}" />
-                    </Canvas>
+                <Viewbox Width="35" Height="35">
+                    <Path Data="{Binding DataContext.channelIcon, RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}}" Fill="{Binding DataContext.color, RelativeSource={RelativeSource AncestorType={x:Type RadioButton}}}" />
                 </Viewbox>
                 <Border
                     x:Name="leftBorder"

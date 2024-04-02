@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Window.DataContext>
-        <viewmodel:LoginViewModel />
+        <viewmodel:LoginViewModel/>
     </Window.DataContext>
     <Grid>
         <StackPanel Margin="10">
