@@ -222,7 +222,7 @@ namespace DiscordClone.MasterChannel.ViewModels
         [ObservableProperty]
         string btnText = "통화 연결";
         [RelayCommand]
-        private async Task JoinChatRoomAsync()
+        private Task JoinChatRoomAsync()
         {
             Friend f = Friend.ConvertUserToFriend(currentUser);
             if (CallingUsers.Contains(f)) //내가 통화 연결되어 있을 시 

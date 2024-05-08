@@ -15,7 +15,7 @@ namespace DiscordClone.Core.Util
 {
     public class DatabaseManager
     {
-        string connectionString = "server=125.184.186.132;user=user;database=discord;port=3306;password=qwer1;";
+        string connectionString = "";
 
         private DatabaseManager()
         {
